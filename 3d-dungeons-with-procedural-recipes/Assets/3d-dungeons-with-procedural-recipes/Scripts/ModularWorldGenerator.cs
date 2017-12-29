@@ -12,7 +12,12 @@ public class ModularWorldGenerator : MonoBehaviour
 
 	void Start()
 	{
-		var startModule = (Module) Instantiate(StartModule, transform.position, transform.rotation);
+		var TopLevelDungeonObject = new GameObject ("TopLevelDungeonObject").transform;
+
+		var startModule = (Module) Instantiate(
+			StartModule, transform.position, transform.rotation);
+		startModule.transform.SetParent( TopLevelDungeonObject);
+			
 		var pendingExits = new List<ModuleConnector>(startModule.GetExits());
 
 		for (int iteration = 0; iteration < Iterations; iteration++)
@@ -24,6 +29,7 @@ public class ModularWorldGenerator : MonoBehaviour
 				var newTag = GetRandom(pendingExit.Tags);
 				var newModulePrefab = GetRandomWithTag(Modules, newTag);
 				var newModule = (Module) Instantiate(newModulePrefab);
+				newModule.transform.SetParent ( TopLevelDungeonObject);
 				var newModuleExits = newModule.GetExits();
 				var exitToMatch = newModuleExits.FirstOrDefault(x => x.IsDefault) ?? GetRandom(newModuleExits);
 				MatchExits(pendingExit, exitToMatch);
